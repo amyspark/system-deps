@@ -783,7 +783,6 @@ impl Config {
                 let mut config = pkg_config::Config::new();
                 config
                     .print_system_libs(false)
-                    .cargo_metadata(false)
                     .range_version(metadata::parse_version(version))
                     .statik(statik);
 
@@ -1103,7 +1102,6 @@ impl Library {
         let pkg_lib = pkg_config::Config::new()
             .atleast_version(version)
             .print_system_libs(false)
-            .cargo_metadata(false)
             .statik(true)
             .probe(lib);
 
