@@ -296,6 +296,33 @@ pub struct Dependencies {
     libs: HashMap<String, Library>,
 }
 
+fn library_name(l: &String, link_paths: &Vec<PathBuf>) -> Result<(String, PathBuf), String> {
+    let libnames = {
+        let mut names = vec![format!("lib{}.a", l)];
+
+        if cfg!(target_os = "windows") {
+            names.push(format!("{}.lib", l));
+        }
+
+        names
+    };
+
+    for dir in link_paths {
+        for libname in &libnames {
+            let libpath: PathBuf = dir.join(libname);
+            if libpath.exists() {
+                if cfg!(target_os = "windows") {
+                    return Ok((libname.clone(), libpath));
+                } else {
+                    return Ok((l.to_owned(), libpath));
+                }
+            }
+        }
+    }
+
+    Err(l.to_owned())
+}
+
 impl Dependencies {
     /// Retrieve details about a system dependency.
     ///
@@ -405,10 +432,12 @@ impl Dependencies {
                 // available and let the linking fail if the user is wrong.
                 let is_static_lib_available = should_be_linked_statically;
 
-                lib.libs = split_string(&value)
-                    .into_iter()
-                    .map(|l| InternalLib::new(l, is_static_lib_available))
-                    .collect();
+                let library = |l: String| match library_name(&l, &lib.link_paths) {
+                    Ok(l) => InternalLib::new(l.0, is_static_lib_available),
+                    Err(l) => InternalLib::new(l, is_static_lib_available),
+                };
+
+                lib.libs = split_string(&value).into_iter().map(library).collect();
             }
             if let Some(value) = env.get(&EnvVariable::new_lib_framework(name)) {
                 lib.frameworks = split_string(&value);
@@ -783,7 +812,6 @@ impl Config {
                 let mut config = pkg_config::Config::new();
                 config
                     .print_system_libs(false)
-                    .cargo_metadata(false)
                     .range_version(metadata::parse_version(version))
                     .statik(statik);
 
@@ -1007,31 +1035,20 @@ impl Library {
             }
         };
 
-        let is_static_available = |name: &String| -> bool {
-            let libnames = {
-                let mut names = vec![format!("lib{}.a", name)];
-
-                if cfg!(target_os = "windows") {
-                    names.push(format!("{}.lib", name));
-                }
-
-                names
-            };
-
-            l.link_paths.iter().any(|dir| {
-                let library_exists = libnames.iter().any(|libname| dir.join(libname).exists());
-                library_exists && !system_roots.iter().any(|sys| dir.starts_with(sys))
-            })
+        let library = |name: &String| match library_name(name, &l.link_paths) {
+            Ok((libname, libpath)) => InternalLib::new(
+                libname,
+                !system_roots
+                    .iter()
+                    .any(|sys| libpath.parent().unwrap().starts_with(sys)),
+            ),
+            Err(l) => InternalLib::new(l, false),
         };
 
         Self {
             name: name.to_string(),
             source: Source::PkgConfig,
-            libs: l
-                .libs
-                .iter()
-                .map(|lib| InternalLib::new(lib.to_owned(), is_static_available(lib)))
-                .collect(),
+            libs: l.libs.iter().map(library).collect(),
             link_paths: l.link_paths,
             include_paths: l.include_paths,
             frameworks: l.frameworks,
@@ -1103,7 +1120,6 @@ impl Library {
         let pkg_lib = pkg_config::Config::new()
             .atleast_version(version)
             .print_system_libs(false)
-            .cargo_metadata(false)
             .statik(true)
             .probe(lib);
 
@@ -1178,7 +1194,11 @@ impl fmt::Display for BuildFlag {
             BuildFlag::SearchFramework(lib) => write!(f, "rustc-link-search=framework={}", lib),
             BuildFlag::Lib(lib, statik) => {
                 if *statik {
-                    write!(f, "rustc-link-lib=static={}", lib)
+                    if cfg!(target_os = "windows") {
+                        write!(f, "rustc-link-lib=static:+verbatim={}", lib)
+                    } else {
+                        write!(f, "rustc-link-lib=static={}", lib)
+                    }
                 } else {
                     write!(f, "rustc-link-lib={}", lib)
                 }
