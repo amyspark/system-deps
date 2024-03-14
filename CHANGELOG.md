@@ -1,0 +1,182 @@
+# Changelog
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+## [6.2.1](https://github.com/amyspark/system-deps/compare/v6.2.0...v6.2.1) - 2024-03-14
+
+### Fixed
+- fix new clippy warning
+- fix typos
+- fix clippy warnings
+- fix new clippy warning
+- fix needless_borrow clippy warning
+- fix new clippy warnings
+- fix clippy warning
+- fix test with latest pkg-config crate
+- fix new clippy warnings
+- fix clippy warnings
+- fix some typo and clippy warnings
+- fix clippy warnings
+- fix deprecated license syntax
+- fix doc typo
+- fix toplevel_ref_arg clippy warning
+
+### Other
+- ignore version_range_unsatisfied
+- fix 'optional' test on Ubuntu CI
+- use release-plz
+- Release 6.2.0
+- Implement support for requiring dependency version ranges
+- remove coverage job
+- fix Windows job
+- bump minimum required cfg-expr
+- Release 6.1.2
+- Update to toml 0.8 and itertools 0.11
+- Bump pkg-config to 0.3.23
+- Release 6.1.1
+- Honor manual requests for static linking
+- Release 6.1.0
+- Add integration test for fallback names.
+- Add `fallback-names` to allow probing different library names.
+- Release 6.0.5
+- Add support for non-builtin targets
+- Release 6.0.4
+- update toml dep
+- update cfg-expr dep
+- ignore result_large_err clippy warnings
+- Release 6.0.3
+- Update `cfg-expr` to version 0.11
+- Release 6.0.2
+- Update cfg-expr to version 0.10
+- Release 6.0.1
+- Update heck to 0.4
+- Release 6.0.0
+- Sort dependencies before using them
+- Bump version-compare to 0.1.0
+- Release 5.0.0
+- Fix statically linked libraries that have dynamically linked dependencies, by falling back to the dynamic library
+- Release 4.0.0
+- update cfg-expr dep
+- Fix clippy lints
+- Update documentation
+- Improve code by creating more error types
+- Remove itertools dependency
+- Remove anyhow dependency
+- Remove thiserror dependency
+- Remove strum dependencies
+- Release 3.2.0
+- add env variables to statically link libraries
+- update cfg-expr dep
+- fix bool assert comparaisons
+- Release 3.1.2
+- don't use relative paths to find Cargo.toml
+- Update strum and strum_macros to 0.21
+- 3.1.1
+- allow multiple paths in PKG__CONFIG_PATH, fixes [#37](https://github.com/amyspark/system-deps/pull/37)
+- 3.1.0
+- allow to define target specific dependencies
+- factor out parse_deps_table()
+- implement Default
+- run tests on Windows as well
+- fix test on Windows
+- 3.0.0
+- rename Libraries to Dependencies
+- add helpers aggregating settings from all libraries
+- test defines hash table
+- probe(): returns Libraries instead of the hash directly
+- use Libraries in tests
+- add Libraries object containing the retrived libs
+- export feature for each found dependency
+- add 'optional' setting in configs
+- document the key of the returned hash
+- no need to call env::set_var()
+- factor out config parsing code
+- release 2.0.3
+- fix workflow
+- setup release-drafter
+- add ci badge
+- add coverage badge
+- update itertools
+- run on push as well
+- run tests on MacOX as well
+- add code coverage
+- 2.0.2
+- update strum
+- simplify toml examples
+- document that the v1_* pattern is actually enforced
+- update version in doc
+- add ci
+- remove arch specific paths in tests
+- 2.0.1
+- Inherit the default name override in features
+- 2.0.0
+- check we pick the right lib when multiple features are enabled
+- add library name
+- allow to override libname using version features
+- generalize feature overrides
+- change version features syntax
+- update deps
+- 1.3.2
+- add LICENSE files
+- trigger rebuild if system-deps env variables changed
+- sort flags before comparing
+- add environment variable enum
+- fix a couple of typos
+- 1.3.1
+- pass real lib name to build internal closure
+- 1.3.0
+- ignore needless_doctest_main clippy warnings
+- add SYSTEM_DEPS_BUILD_INTERNAL env variable
+- pass lib name to build internal closure
+- factor out test_build_internal()
+- fix default BUILD_INTERNAL
+- improve doc
+- simplify doc
+- update system-deps version
+- update description
+- 1.2.0
+- move back to metadata section
+- add documentation and readme
+- sync with README
+- update
+- rename toml section
+- rename METADEPS_* env variables
+- rename to system-deps
+- fully replace error-chain by this-error
+- add hooks to internally build libs
+- factor out create_config()
+- add Config object to the API using builder pattern
+- add ErrorKind::InvalidMetadata
+- ensure that manually defined deps have at least one lib
+- add source field indicating the source of a library
+- support NO_PKG_CONFIG env variables
+- use our own Library struct instead of pkg-config's
+- allow user to override build flags using env variable
+- add env variables mock for tests
+- stop relying on pkg-config to print cargo metadata
+- remove deny warnings
+- export lib include paths as env variable
+- move tests to the main crate
+- disable PKG_CONFIG_ALLOW_SYSTEM_LIBS
+- add feature-versions
+- factor out has_feature()
+- allow to override lib name
+- port to Rust 2018
+- update toml dep
+- update error-chain dep
+- use ? instead of deprecated try!
+- run cargo fmt
+- Remove documentation key
+- bump lazy_static to 1
+- Version 1.1.2
+- Update error-chain to 0.10
+- Disable default-features on toml to avoid rustc-serialize dep
+- Update versioned dependency
+- Support conditional dependencies based on cargo features
+- Disable default-features on error-chain
+- s/dependencies/build-dependencies/
+- Initial version
